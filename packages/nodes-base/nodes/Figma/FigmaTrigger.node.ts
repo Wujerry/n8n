@@ -30,6 +30,20 @@ export class FigmaTrigger implements INodeType {
 			{
 				name: 'figmaApi',
 				required: true,
+				displayOptions: {
+					show: {
+						authentication: ['accessToken'],
+					},
+				},
+			},
+			{
+				name: 'figmaOAuth2Api',
+				required: true,
+				displayOptions: {
+					show: {
+						authentication: ['oAuth2'],
+					},
+				},
 			},
 		],
 		webhooks: [
@@ -41,6 +55,22 @@ export class FigmaTrigger implements INodeType {
 			},
 		],
 		properties: [
+			{
+				displayName: 'Authentication',
+				name: 'authentication',
+				type: 'options',
+				options: [
+					{
+						name: 'Access Token',
+						value: 'accessToken',
+					},
+					{
+						name: 'OAuth2',
+						value: 'oAuth2',
+					},
+				],
+				default: 'accessToken',
+			},
 			{
 				displayName: 'Team ID',
 				name: 'teamId',
@@ -129,7 +159,7 @@ export class FigmaTrigger implements INodeType {
 					team_id: teamId,
 					description: `n8n-webhook:${webhookUrl}`,
 					endpoint: webhookUrl,
-					passcode: randomBytes(10).toString('hex'),
+					passcode: randomBytes(32).toString('hex'),
 				};
 
 				const responseData = await figmaApiRequest.call(this, 'POST', endpoint, body);
